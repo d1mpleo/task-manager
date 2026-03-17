@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-
+import Button from './components/Button';
 import Header from './components/Header'
 
 
@@ -12,6 +12,7 @@ class App extends React.Component {
     super(props)
     this.state = {
       text: "state 1",
+      tip: "Enter login and password",
       userData: "",
       password: ""
     }
@@ -23,16 +24,32 @@ class App extends React.Component {
     this.pswRef = React.createRef();
   }
 
+componentDidUpdate(prevProps, prevState) {
+  if (
+    prevState.password !== this.state.password ||
+    prevState.userData !== this.state.userData
+  ) {
+    if (this.state.password === "" && this.state.userData === "") {
+      this.setState({ tip: "Enter login and password" });
+    } else {
+      this.setState({ tip: "" });
+    }
+  }
+}
+
+
   render() {
     return (<div>
   <Header  description="description"/>
     <h1>{this.state.text}</h1>
     <h2>{this.state.userData}</h2>
     <h2>{this.state.password}</h2>
-    <h1></h1>
+    <h1>{this.state.tip}</h1>
     <input placeholder="логін" onClick={this.inputClick} ref={this.lgnRef}/>
     <input placeholder="пароль" ref={this.pswRef} onChange={event => this.setState({password: event.target.value})}/>
-    <button onClick={this.loginClick}>Ввійти</button>
+    <Button />
+    <Button text="logi"/>
+    {/* <button onClick={this.loginClick}>Ввійти</button> */}
   </div>)
 }
   inputClick() {
