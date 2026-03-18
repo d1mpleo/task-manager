@@ -10,12 +10,15 @@ export class User {
     @Column({unique: true})
     username: string;
 
+    @Column({unique: true})
+    email: string;
+
     @Column()
     password: string;
 
     @OneToMany(_type => Task, task => task.user, { eager: true })
     tasks: Task[]
 
-    @Column('json')
+    @Column('json', { default: {} })
     description: Record<string, any>;
 }

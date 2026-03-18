@@ -18,7 +18,7 @@ export class AuthService {
     ){}
 
     async signUp(userDTO: UserDTO): Promise<User>{
-        const { username, password, description } = userDTO;
+        const { username, email, password, description } = userDTO;
 
         const salt = await bcrypt.genSalt();
         const password_hash = await bcrypt.hash(password, salt);
@@ -29,6 +29,7 @@ export class AuthService {
         }
         const user = this.UserRepository.create({
             username,
+            email,
             password: password_hash,
             description
         })
@@ -37,14 +38,19 @@ export class AuthService {
     }
 
     async signIn(signInDTO: signInDTO): Promise< {accessToken: string} >{
-        const { username, password } = signInDTO;
+        const { email, password } = signInDTO;
 
-        const user = await this.UserRepository.findOneBy({ username });
+        const user = await this.UserRepository.findOneBy({ email });
 
         if(!user) throw new BadRequestException("Username not found");
 
         if(await bcrypt.compare(password, user.password)){
-            const payload: JwtPayload = {username};
+            const payload = {
+    sub: user.id,           // унікальний ідентифікатор
+    email: user.email,      // email для комунікації
+    username: user.username // ім'я для відображення
+  };
+
             const accessToken: string = await this.jwtService.sign(payload);
             return { accessToken };
         }else{

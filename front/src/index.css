@@ -4,7 +4,18 @@
 }
 
 body {
-  background-color: #17007c;
+  /* Лінійний градієнт */
+    /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+    
+    /* Або радіальний градієнт */
+    /* background: radial-gradient(circle at top left, #667eea, #764ba2); */
+    
+    /* Або багатоколірний градієнт */
+    /* background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1); */
+    background: linear-gradient(to bottom, #87CEEB, #002041);
+    /* Щоб фон не повторювався */
+    background-attachment: fixed;
+    background-size: cover;
   color: white;
 }
 

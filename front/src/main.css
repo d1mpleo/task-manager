@@ -1,14 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Iosevka+Charon+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
 * {
   margin: 0;
   padding: 0;
+  font-weight: 300;
 }
 
 body {
-  background-color: #17007c;
+  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
   color: white;
+  font-family: "Iosevka Charon Mono", monospace;
 }
 
 .header {
-  background-color: #461d1d;
-  padding: 20px;
+  background-color: #222;
+  padding: 25px 100px; 
+  font-weight: 600;
 }
