@@ -1,56 +1,32 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+// tasks.controller.ts
+import { Controller, Post, Body, Get, UseGuards, Req, Patch, Param } from '@nestjs/common';
 import { TasksService } from './tasks.service';
-
-import { createTaskDTO } from './dto/create-task.dto';
-import { updateV1State } from 'uuid/dist/cjs/v1';
-import { GetTasksFilterDTO } from './dto/get-tasks-dto';
-import { Task } from './task.entity';
+import { CreateTaskDTO } from './dto/create-task.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { Getuser } from 'src/auth/get-user.decorator';
-import { User } from 'src/auth/user.entity';
-import { Logger } from '@nestjs/common';
+import { TaskStatus } from './task.entity';
 
 @Controller('tasks')
-@UseGuards(AuthGuard())
+@UseGuards(AuthGuard('jwt'))
 export class TasksController {
-    private logger = new Logger('Tasks controller');
-    constructor(private tasksService: TasksService) {}
+  constructor(private readonly tasksService: TasksService) {}
 
-    @Get()
-    getAllTasks(@Getuser() user: User): Promise<Task[]>{
-        this.logger.verbose(`User ${user.username} retrieving the task`)
-        return this.tasksService.getAllTasks(user);
-    }
+  @Post()
+  create(@Body() createTaskDto: CreateTaskDTO, @Req() req) {
+    return this.tasksService.create(createTaskDto, req.user.id);
+  }
 
-    // @Get("/filter")
-    // getTasksWithFilter(@Body() filter: GetTasksFilterDTO): Task[]{
-    //     if(Object.keys(filter).length){
-    //         console.log(1)
-    //         return this.tasksService.getTasksWithFilter(filter);
-    //     }else{
-    //         console.log(2)
-    //         return this.tasksService.getTasksWithFilter(filter);
-    //     }
-    // }
+  @Get()
+  findAll(@Req() req) {
+    return this.tasksService.findAll(req.user.id);
+  }
 
-    @Get('/:id')
-    getTaskByID(@Param('id') id: string, @Getuser() user: User): Promise<Task> {
-        return this.tasksService.getTaskById(id, user);
-    }
- 
-    @Post()
-    createTask(@Body() createTaskDTO: createTaskDTO, @Getuser() user: User): Promise<Task>{
-        this.logger.verbose(`User "${user.username}" have created task`)
-        return this.tasksService.createTask(createTaskDTO, user);
-    }
+  @Get('status/:status')
+  findByStatus(@Param('status') status: TaskStatus, @Req() req) {
+    return this.tasksService.findByStatus(req.user.id, status);
+  }
 
-    @Delete()
-    deleteTask(@Body() body: {id: string}): Promise<Task>{
-        return this.tasksService.deleteTask(body.id);
-    }
-
-    // @Put("/:id")
-    // updateTask(@Param('id') id: string, @Body() createTaskDTO: createTaskDTO) {
-    //     return this.tasksService.updateTask(id, createTaskDTO);
-    // }
+  @Patch(':id/status')
+  updateStatus(@Param('id') id: number, @Body('status') status: TaskStatus) {
+    return this.tasksService.updateStatus(id, status);
+  }
 }

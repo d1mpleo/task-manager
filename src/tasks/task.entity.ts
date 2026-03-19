@@ -1,29 +1,47 @@
-import { Exclude } from "class-transformer";
-import { IsNotEmpty } from "class-validator";
-import { User } from "src/auth/user.entity";
-import { Column, CreateDateColumn, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+// task.entity.ts
+import { Entity, Column, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from '../auth/user.entity';
+
+export enum TaskStatus {
+  URGENT = 'urgent',           // Термінові задачі
+  FUTURE = 'future',           // Майбутні задачі
+  PENDING_APPROVAL = 'pending_approval', // Очікують схвалення
+  DONE = 'done'
+}
 
 @Entity()
 export class Task {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
+  @Column()
+  title: string;
 
-    
-    @IsNotEmpty()
-    @Column()
-    title: string;
+  @Column({ type: 'text', default: '' })
+  description: string;
 
-    @Column()
-    description: string;
+  @Column('simple-array', { nullable: true })
+  technologies: string[];
 
-    @Column("text", { array: true })
-    technologies: string[];
+  @Column({
+    type: 'enum',
+    enum: TaskStatus,
+    default: TaskStatus.PENDING_APPROVAL
+  })
+  status: TaskStatus;
 
-    @CreateDateColumn({ type: 'timestamp'})
-    createdAt: Date;
+  @ManyToOne(() => User, (user) => user.tasks)
+  user: User;
 
-    @ManyToOne(_type => User, user => user.tasks, { eager: false })
-    @Exclude({ toPlainOnly: true })
-    user: User
+  @Column()
+  userId: number;
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  createdAt: Date;
+
+  @Column({ type: 'timestamp', nullable: true })
+  deadline: Date; 
+
+  @Column({ type: 'timestamp', nullable: true })
+  doneAt: Date; 
 }
