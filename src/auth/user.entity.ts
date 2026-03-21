@@ -21,4 +21,7 @@ export class User {
 
     @Column('json', { default: {} })
     description: Record<string, any>;
+
+    @Column('simple-array', { nullable: true })
+    subordinates: string[];
 }
