@@ -1,14 +1,19 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Get, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/auth/user.entity';
+import { ApplicationEntity } from 'src/user/application.entity';
 import { Repository } from 'typeorm';
 import { AddSubordinateDto } from './dto/add-subordinate.dto';
+import { CreateApplicationDto } from './dto/application.dto';
+
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(User)
         private userRepository: Repository<User>,
+        @InjectRepository(ApplicationEntity)
+        private appRepository: Repository<ApplicationEntity>,
       ) {}
 
     async addSubordinate(managerId: string, addSubordinateDto: AddSubordinateDto): Promise<User> {
@@ -71,4 +76,24 @@ export class UserService {
 
     return manager;
   }
+
+  async addApplication(userId: string, createApplicationDto: CreateApplicationDto): Promise<ApplicationEntity[]> {
+    const application = this.appRepository.create({
+      ...createApplicationDto,
+      userId,
+      appliedAt: new Date(),
+    });
+
+    await this.appRepository.save(application);
+
+    return this.getApplications(userId);
+  }
+
+  async getApplications(userId: string): Promise<ApplicationEntity[]> {
+    return this.appRepository.find({
+      where: { userId },
+      order: { appliedAt: 'DESC' }
+    });
+  }
+
 }

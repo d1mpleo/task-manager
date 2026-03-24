@@ -21,6 +21,7 @@ const Header = ({ description }) => {
                     
                     <nav style={styles.nav}>
                         <Link to="/tasks" style={styles.navLink}>Задачі</Link>
+                        <Link to="/user/app" style={styles.navLink}>Мої відгуки</Link>
                         {!token ? (
                             <>
                                 <Link to="/signin" style={styles.navLink}>Вхід</Link>

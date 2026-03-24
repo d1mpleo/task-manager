@@ -45,6 +45,7 @@ import Header from "./components/Header";
 import Task from "./components/Task";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
+import Applications from './pages/Applications';
 
 export default function App() {
   return (
@@ -54,6 +55,7 @@ export default function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/tasks" element={<Task />} />
+        <Route path="/user/app" element={<Applications />} />
       </Routes>
     </div>
   );
