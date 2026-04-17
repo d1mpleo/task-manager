@@ -12,6 +12,8 @@ export default function Applications() {
     });
     const [submitting, setSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState(null);
+    const [companyError, setCompanyError] = useState(null);
+    const [isCompanyChecked, setIsCompanyChecked] = useState(false); // Стан для відстеження перевірки
 
     const GOAL = 100; // Мета - 100 заявок
 
@@ -39,16 +41,86 @@ export default function Applications() {
         fetchApplications();
     }, []);
 
+    // Функція для перевірки, чи вже подавалась заявка в цю компанію
+    const checkCompanyDuplicate = (companyName) => {
+        if (!companyName.trim()) return false;
+        
+        const existingApplication = applications.find(
+            app => app.company.toLowerCase() === companyName.trim().toLowerCase()
+        );
+        
+        return !!existingApplication;
+    };
+
+    // Функція для отримання інформації про існуючу заявку
+    const getExistingApplicationInfo = (companyName) => {
+        return applications.find(
+            app => app.company.toLowerCase() === companyName.trim().toLowerCase()
+        );
+    };
+
+    // Окрема функція для перевірки компанії по кнопці
+// Окрема функція для перевірки компанії по кнопці (компактний варіант)
+const handleCheckCompany = () => {
+    if (!formData.company.trim()) {
+        setCompanyError('Please enter a company name first');
+        setIsCompanyChecked(false);
+        return;
+    }
+
+    if (checkCompanyDuplicate(formData.company)) {
+        const existingApp = getExistingApplicationInfo(formData.company);
+        const formattedDate = new Date(existingApp.appliedAt).toLocaleDateString('uk-UA', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
+        setCompanyError(
+            `❌ You have already applied to "${formData.company}"! ` +
+            `Title: "${existingApp.title}". Date: ${formattedDate}. ` +
+            `You cannot create another application for this company.`
+        );
+        setIsCompanyChecked(true);
+    } else {
+        setCompanyError(
+            `✅ Great! "${formData.company}" is available. You haven't applied to this company yet.`
+        );
+        setIsCompanyChecked(true);
+    }
+};
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({
             ...prev,
             [name]: value
         }));
+
+        // Скидаємо статус перевірки при зміні назви компанії
+        if (name === 'company') {
+            setIsCompanyChecked(false);
+            setCompanyError(null);
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        // Перевіряємо, чи була проведена перевірка компанії
+        if (!isCompanyChecked) {
+            setCompanyError('Please check if the company is available first using the "Check Company" button');
+            return;
+        }
+
+        // Перевіряємо, чи немає помилки дублікату
+        if (companyError && companyError.includes('already applied')) {
+            setSubmitError('Cannot create application: You have already applied to this company');
+            return;
+        }
+
         setSubmitting(true);
         setSubmitError(null);
 
@@ -78,6 +150,8 @@ export default function Applications() {
                 company: '',
                 description: ''
             });
+            setCompanyError(null);
+            setIsCompanyChecked(false);
             setIsModalOpen(false);
         } catch (err) {
             setSubmitError(err.message);
@@ -89,6 +163,13 @@ export default function Applications() {
     const openModal = () => {
         setIsModalOpen(true);
         setSubmitError(null);
+        setCompanyError(null);
+        setIsCompanyChecked(false);
+        setFormData({
+            title: '',
+            company: '',
+            description: ''
+        });
     };
 
     const closeModal = () => {
@@ -99,6 +180,8 @@ export default function Applications() {
             description: ''
         });
         setSubmitError(null);
+        setCompanyError(null);
+        setIsCompanyChecked(false);
     };
 
     // Розрахунок прогресу
@@ -115,7 +198,7 @@ export default function Applications() {
                 display: 'flex', 
                 justifyContent: 'space-between', 
                 alignItems: 'center', 
-                marginBottom: '20px' 
+                marginBottom: '20px',
             }}>
                 <h1>Applications</h1>
                 <button 
@@ -251,7 +334,7 @@ export default function Applications() {
                         borderRadius: '8px',
                         padding: '30px',
                         width: '90%',
-                        maxWidth: '500px',
+                        maxWidth: '550px',
                         maxHeight: '90vh',
                         overflowY: 'auto',
                         position: 'relative'
@@ -283,7 +366,7 @@ export default function Applications() {
                                 borderRadius: '4px',
                                 border: '1px solid #ffcdd2'
                             }}>
-                                Error: {submitError}
+                                {submitError}
                             </div>
                         )}
                         
@@ -321,21 +404,69 @@ export default function Applications() {
                                 }}>
                                     Company *
                                 </label>
-                                <input
-                                    type="text"
-                                    name="company"
-                                    value={formData.company}
-                                    onChange={handleInputChange}
-                                    required
-                                    placeholder="Enter company name"
-                                    style={{
-                                        width: '100%',
-                                        padding: '10px',
-                                        border: '1px solid #ddd',
+                                <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                                    <input
+                                        type="text"
+                                        name="company"
+                                        value={formData.company}
+                                        onChange={handleInputChange}
+                                        required
+                                        placeholder="Enter company name"
+                                        style={{
+                                            flex: 1,
+                                            padding: '10px',
+                                            border: '1px solid #ddd',
+                                            borderRadius: '4px',
+                                            fontSize: '14px',
+                                            borderColor: companyError && companyError.includes('already applied') ? '#dc3545' : 
+                                                       (companyError && companyError.includes('available') ? '#28a745' : '#ddd')
+                                        }}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={handleCheckCompany}
+                                        style={{
+                                            padding: '10px 20px',
+                                            backgroundColor: '#6c757d',
+                                            color: 'white',
+                                            border: 'none',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer',
+                                            fontSize: '14px',
+                                            whiteSpace: 'nowrap'
+                                        }}
+                                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#5a6268'}
+                                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#6c757d'}
+                                    >
+                                        🔍 Check Company
+                                    </button>
+                                </div>
+                                {companyError && (
+                                    <div style={{
+                                        marginTop: '10px',
+                                        padding: '12px',
+                                        backgroundColor: companyError.includes('available') ? '#d4edda' : '#f8d7da',
+                                        color: companyError.includes('available') ? '#155724' : '#721c24',
                                         borderRadius: '4px',
-                                        fontSize: '14px'
-                                    }}
-                                />
+                                        fontSize: '13px',
+                                        borderLeft: `3px solid ${companyError.includes('available') ? '#28a745' : '#dc3545'}`,
+                                        whiteSpace: 'pre-line'
+                                    }}>
+                                        {companyError}
+                                    </div>
+                                )}
+                                {!isCompanyChecked && formData.company && !companyError && (
+                                    <div style={{
+                                        marginTop: '5px',
+                                        fontSize: '12px',
+                                        color: '#ffc107',
+                                        padding: '5px',
+                                        backgroundColor: '#fff3cd',
+                                        borderRadius: '4px'
+                                    }}>
+                                        ⚠️ Please click "Check Company" to verify availability
+                                    </div>
+                                )}
                             </div>
                             
                             <div style={{ marginBottom: '20px' }}>
@@ -383,15 +514,15 @@ export default function Applications() {
                                 </button>
                                 <button
                                     type="submit"
-                                    disabled={submitting}
+                                    disabled={submitting || !isCompanyChecked || (companyError && companyError.includes('already applied'))}
                                     style={{
                                         padding: '10px 20px',
-                                        backgroundColor: '#007bff',
+                                        backgroundColor: (!isCompanyChecked || (companyError && companyError.includes('already applied'))) ? '#6c757d' : '#007bff',
                                         color: 'white',
                                         border: 'none',
                                         borderRadius: '4px',
-                                        cursor: submitting ? 'not-allowed' : 'pointer',
-                                        opacity: submitting ? 0.6 : 1,
+                                        cursor: (submitting || !isCompanyChecked || (companyError && companyError.includes('already applied'))) ? 'not-allowed' : 'pointer',
+                                        opacity: (submitting || !isCompanyChecked || (companyError && companyError.includes('already applied'))) ? 0.6 : 1,
                                         fontSize: '14px'
                                     }}
                                 >
@@ -410,7 +541,8 @@ export default function Applications() {
                     padding: '50px',
                     backgroundColor: '#f9f9f9',
                     borderRadius: '8px',
-                    color: '#666'
+                    color: '#666',
+                    width: '90%'
                 }}>
                     <p>No applications found.</p>
                     <button 
