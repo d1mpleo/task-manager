@@ -14,13 +14,13 @@ export default function Applications() {
     const [submitError, setSubmitError] = useState(null);
     const [companyError, setCompanyError] = useState(null);
     const [isCompanyChecked, setIsCompanyChecked] = useState(false); // Стан для відстеження перевірки
-
+    const API_URL = process.env.REACT_APP_API_URL;
     const GOAL = 100; // Мета - 100 заявок
 
     const fetchApplications = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:3001/user/applications', {
+            const response = await fetch(`${API_URL}/user/applications`, {
                 credentials: 'include',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -126,7 +126,7 @@ const handleCheckCompany = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:3001/user/addApplication', {
+            const response = await fetch(`${API_URL}/user/addApplication`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

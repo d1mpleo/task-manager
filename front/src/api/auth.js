@@ -1,7 +1,7 @@
 // src/api/auth.js
 
-const API_URL = "http://localhost:3000";
-
+//const API_URL = "http://localhost:3000";
+const API_URL = process.env.REACT_APP_API_URL;
 export async function signUp(data) {
   try {
     const res = await fetch(`${API_URL}/auth`, {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CreateTaskModuleWindow from "./createTask";
-
+const API_URL = process.env.REACT_APP_API_URL;
 const Task = () => {
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -16,7 +16,7 @@ const Task = () => {
         try {
             const token = localStorage.getItem('token');
             
-            const response = await fetch("http://localhost:3001/tasks", {
+            const response = await fetch(`${API_URL}/tasks`, {
                 credentials: "include",
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -64,7 +64,7 @@ const Task = () => {
         event.stopPropagation(); // Зупиняємо всплиття події, щоб не відкривалося модальне вікно
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:3001/tasks/${taskId}/status`, {
+            const response = await fetch(`${API_URL}/tasks/${taskId}/status`, {
                 method: 'PATCH',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -86,7 +86,7 @@ const Task = () => {
         if (window.confirm('Ви впевнені, що хочете видалити цю задачу?')) {
             try {
                 const token = localStorage.getItem('token');
-                const response = await fetch(`http://localhost:3001/tasks/${taskId}`, {
+                const response = await fetch(`${API_URL}/tasks/${taskId}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${token}`,

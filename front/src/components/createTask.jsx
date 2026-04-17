@@ -12,6 +12,7 @@ const CreateTaskModuleWindow = ({ onTaskCreated }) => {
     const [techInput, setTechInput] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const API_URL = process.env.REACT_APP_API_URL;
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -83,7 +84,7 @@ const CreateTaskModuleWindow = ({ onTaskCreated }) => {
 
             console.log('Відправляємо дані:', taskData); // Для дебагу
 
-            const response = await fetch("http://localhost:3001/tasks", {
+            const response = await fetch(`${API_URL}/tasks`, {
                 method: 'POST',
                 credentials: "include",
                 headers: {

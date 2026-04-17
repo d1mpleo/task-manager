@@ -1,19 +1,39 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, Logger } from '@nestjs/common';
 import { TransformInterceptor } from './transform.interceptor';
-import { Logger } from '@nestjs/common';
+import { join } from 'path';
+import * as express from 'express';
 
 async function bootstrap() {
-  const logger = new Logger();
+  const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
+
+  // Global pipes & interceptors
   app.useGlobalPipes(new ValidationPipe());
-  app.useGlobalInterceptors(new TransformInterceptor())
+  app.useGlobalInterceptors(new TransformInterceptor());
+
+  // CORS
   app.enableCors({
-    origin: ['http://localhost:3000', 'http://localhost:3001'],
+    origin: process.env.CLIENT_URL?.split(',') || '*',
     credentials: true,
   });
-  await app.listen(process.env.PORT ?? 3001);
-  logger.log("Application listening on port 3001");
+
+  const expressApp = app.getHttpAdapter().getInstance();
+
+  const reactBuildPath = join(__dirname, '..', 'front', 'build');
+
+  expressApp.use(express.static(reactBuildPath));
+
+  expressApp.get('*', (req, res) => {
+    res.sendFile(join(reactBuildPath, 'index.html'));
+  });
+
+  // PORT для Render
+  const port = process.env.PORT ?? 3001;
+  await app.listen(port);
+
+  logger.log(`Application listening on port ${port}`);
 }
+
 bootstrap();
