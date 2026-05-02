@@ -1,5 +1,4 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
-import { TasksService } from 'src/tasks/tasks.service';
 import { UserService } from './user.service';
 import { AddSubordinateDto } from './dto/add-subordinate.dto';
 import { CreateApplicationDto } from './dto/application.dto';
