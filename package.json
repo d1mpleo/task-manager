@@ -6,14 +6,11 @@
   "private": true,
   "license": "UNLICENSED",
   "engines": {
-  "node": "18.x"
-},
-
+    "node": "18.x"
+  },
   "scripts": {
-  "start": "node dist/main.js",
-
+    "start": "node dist/main.js",
     "build": "tsc -p tsconfig.build.json",
-
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -36,6 +33,7 @@
   "dependencies": {
     "@nestjs/cli": "^11.0.21",
     "@nestjs/common": "^11.0.1",
+    "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.0.1",
     "@nestjs/jwt": "^11.0.0",
     "@nestjs/passport": "^11.0.5",
