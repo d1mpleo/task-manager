@@ -8,13 +8,8 @@ import { UserModule } from './user/user.module';
   imports: [TasksModule,
     TypeOrmModule.forRoot({
   type: 'postgres',
-  host: 'localhost',
-  port: 5432,
-  username: 'postgres',
-  password: 'pass1234',
-  database: 'task-management',
-  autoLoadEntities: true,
-  synchronize: true,
+  url: process.env.DATABASE_URL,
+  autoLoadEntities: true
 }),
     AuthModule,
     UserModule
