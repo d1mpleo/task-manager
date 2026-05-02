@@ -12,10 +12,11 @@ async function bootstrap() {
   app.useGlobalInterceptors(new TransformInterceptor());
 
   // CORS
-  app.enableCors({
-    origin: process.env.CLIENT_URL?.split(',') || '*',
-    credentials: true,
-  });
+app.enableCors({
+  origin: ['https://front-10gr.onrender.com'], // твій фронт із Render
+  credentials: true,
+});
+
 
   const port = process.env.PORT || 3001;
   await app.listen(port);
