@@ -1,4 +1,3 @@
-import { User } from 'src/auth/user.entity';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
 
 @Entity('applications')

@@ -1,7 +1,8 @@
 import { BadRequestException, ConflictException, Get, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/auth/user.entity';
-import { ApplicationEntity } from 'src/user/application.entity';
+import { User } from '../auth/user.entity';
+import { ApplicationEntity } from './application.entity';
+
 import { Repository } from 'typeorm';
 import { AddSubordinateDto } from './dto/add-subordinate.dto';
 import { CreateApplicationDto } from './dto/application.dto';
