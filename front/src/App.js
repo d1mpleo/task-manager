@@ -52,6 +52,8 @@ export default function App() {
     <div>
       <Header description="Task list" />
       <Routes>
+        <Route path="/" element={<SignIn />} />
+        <Route path="*" element={<SignIn />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/tasks" element={<Task />} />

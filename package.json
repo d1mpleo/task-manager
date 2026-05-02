@@ -5,6 +5,10 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "engines": {
+  "node": "18.x"
+},
+
   "scripts": {
   "start": "node dist/main.js",
 
@@ -12,7 +16,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "node dist/main.js",
     "start:server": "npm run start:dev",
     "start:client": "npm --prefix front start",
     "dev": "concurrently \"npm run start:server\" \"npm run start:client\"",
@@ -22,7 +26,6 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli",
     "migration:create": "npm run typeorm -- migration:create ./src/db/migrations/$npm_config_name",
     "migration:generate": "npm run build && npm run typeorm -- -d ./data-source.ts migration:generate ./src/db/migrations/$npm_config_name",
@@ -30,6 +33,7 @@
     "migration:revert": "npm run build && npm run typeorm -- -d ./data-source.ts migration:revert"
   },
   "dependencies": {
+    "@nestjs/cli": "^11.0.21",
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/jwt": "^11.0.0",
@@ -43,9 +47,6 @@
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "pg": "^8.16.3",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^7.13.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.26"
@@ -53,7 +54,6 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
-    "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
     "@swc/cli": "^0.6.0",
