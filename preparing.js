@@ -43,10 +43,14 @@ const oldestCar = cars.reduce((a, b) => {
 
 
 
-
+// closure
 
 // function outer() {
 //   let x = 10;
+
+//   function getX() {
+//     x = x + 20;
+//   }
 
 //   return function inner() {
 
@@ -60,7 +64,10 @@ const oldestCar = cars.reduce((a, b) => {
 // console.log(a());
 // console.log(a());
 // console.log(b());
+// console.log(a());
 // console.log(b());
+
+
 
 
 
@@ -156,3 +163,116 @@ const oldestCar = cars.reduce((a, b) => {
 
 
 // console.log(pigIt("This is my string !"))
+               //[1, 2]   // [6;10]
+// function runLoop(arr, a){
+//   console.log(a)
+//   arr.forEach((inter) => { // [1, 2] // [1, 2], [6, 10] // 
+//       if((a[0] >= inter[0] && a[0] <= inter[1]) && 
+//       (a[1] >= inter[0] && a[1] <= inter[1])) return; // 
+//       if(a[0] > inter[0] && a[0] < inter[1]) inter[1] = a[1]; runLoop(arr, a);
+//       if(a[1] > inter[0] && a[1] < inter[1]) {inter[0] = a[0]; runLoop(arr, a); }
+//       else {
+//         arr.push(inter);
+
+//         runLoop(arr, a.filter(num => num !== inter)); // arr = [1,2], [6;10]
+//       }
+//     });
+// }
+
+// function findUniqueIntervals(fullArr){
+
+//   fullArr.forEach((el, index) => {   
+//     if(index===0) return;
+//     const smallArr = fullArr.slice(0, index);
+//     smallArr.forEach((prevEl, i) => {
+//       if(el[0] < prevEl[0] && el[1] > prevEl[1]) {
+//         fullArr[i][0] = el[0];
+//         fullArr[i][1] = el[1];
+//         prevEl[0] = el[0];
+//         prevEl[1] = el[1];
+//       } else if(el[0] > prevEl[0] && el[1] < prevEl[1]) {
+//         el[0] = prevEl[0];
+//         el[1] = prevEl[1];
+//       } else if(el[0] > prevEl[0] && el[0] < prevEl[1] && el[1] > prevEl[1]) {
+//         el[0] = prevEl[0];
+//         fullArr[i][0] = el[1];
+//         prevEl[1] = el[1];
+//       } else if(el[0] < prevEl[0] && el[1] > prevEl[0] && el[1] < prevEl[1]) {
+//         el[1] = prevEl[1];
+//         prevEl[0] = el[0];
+//         fullArr[i][0] = el[0];
+//       }
+//     });
+//   })
+
+//   const res = [];
+//   const seems = new Set();
+
+//   fullArr.forEach((a) => {
+//     const key = JSON.stringify(a);
+//     if(!seems.has(key)){
+//       seems.add(key);
+//       res.push(a);
+//     } 
+//   })
+
+
+//   return res;
+// }
+
+
+// function sumIntervals(intervals) {
+//   if (!intervals || intervals.length === 0) return 0;
+
+//   // 1. Сортуємо інтервали за початком
+//   intervals.sort((a, b) => a[0] - b[0]);
+
+//   let total = 0;
+//   let currentStart = intervals[0][0];
+//   let currentEnd = intervals[0][1];
+
+//   // 2. Зливаємо перекриття
+//   for (let i = 1; i < intervals.length; i++) {
+//     const [start, end] = intervals[i];
+
+//     if (start > currentEnd) {
+//       // немає перекриття → додаємо довжину
+//       total += currentEnd - currentStart;
+//       currentStart = start;
+//       currentEnd = end;
+//     } else {
+//       // є перекриття → розширюємо інтервал
+//       currentEnd = Math.max(currentEnd, end);
+//     }
+//   }
+
+//   // додаємо останній інтервал
+//   total += currentEnd - currentStart;
+
+//   return total;
+// }
+
+
+// const pam = [
+//    [0, 20],
+//    [-100000000, 10],
+//    [30, 40]
+// ]
+// console.log(sumIntervals(pam));
+
+
+
+/*
+1) uI = [a[0]]
+2) перебираємо a з 2: кожен el порівнюється з кожною попередньою парою: якщо ел розширює або el всередині, то el змінюється на дану пару
+*/
+
+
+const user = {
+  name: "Misha",
+  sayHi: function () {
+    console.log(this.name);
+  }
+};
+
+user.sayHi();
